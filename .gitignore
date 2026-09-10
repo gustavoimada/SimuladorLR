@@ -1,0 +1,6 @@
+# pasta de saida da compilacao
+out/
+
+# configuracoes da IDE (IntelliJ)
+.idea/
+*.iml
