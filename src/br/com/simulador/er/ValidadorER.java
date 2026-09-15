@@ -165,18 +165,19 @@ public class ValidadorER
                 }
             }
 
-            // caso 4: checar concatenacao explicita
-            // como o professor exigiu que a concatenacao seja explicita com o ponto '.',
-            // se o usuario colocar dois operandos colados tipo 'ab' ou '(a|b)a' sem ponto, a gente avisa!
+            // caso 4: letras e numeros seguidos podem concatenar sem ponto, tipo 'aa' ou 'a1'
+            // nas juncoes com parenteses ou depois de '*', a concatenacao continua explicita
             if(prox != '\0') 
             {
                 boolean atualPodeTerminarTermo = isOperando(atual) || atual == '*' || atual == ')';
                 boolean proxPodeComecarTermo = isOperando(prox) || prox == '(';
 
-                if(atualPodeTerminarTermo && proxPodeComecarTermo) 
+                boolean operandosSeguidos = isOperando(atual) && isOperando(prox);
+
+                if(atualPodeTerminarTermo && proxPodeComecarTermo && !operandosSeguidos)
                 {
                     throw new IllegalArgumentException(
-                        "concatenacao deve ser explicita usando o ponto '.'. exemplo: use '" + atual + "." + prox + "' em vez de '" + atual + "" + prox + "'.");
+                        "use o ponto '.' para concatenar com grupos ou apos '*'. falta '.' entre '" + atual + "' e '" + prox + "'.");
                 }
             }
         }

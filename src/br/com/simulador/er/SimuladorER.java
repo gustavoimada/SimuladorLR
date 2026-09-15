@@ -33,9 +33,9 @@ public class SimuladorER
     // testa uma unica palavra usando o metodo nativo matches da propria String
     public ResultadoSimulacao simularPalavra(String palavra) 
     {
-        String palavraTratada = palavra.trim();
-        if(palavraTratada == null || palavraTratada.equals("ε") || palavraTratada.isEmpty())
-            palavra = "";
+        String palavraTratada = palavra == null ? "" : palavra.trim();
+        if(palavraTratada.equals("ε"))
+            palavraTratada = "";
 
         // aqui usamos direto o metodo matches da String do java, bem simples de entender
         boolean aceita = palavraTratada.matches(this.expressaoRegular.getRegexJava());

@@ -51,6 +51,7 @@ public class Main
     {
         System.out.println("\n--- SIMULACAO DA ER ---");
         System.out.println("Regras da ER: use letras, numeros, '.' (concat), '|' ou '+' (uniao), '*' (kleene) e '()'");
+        System.out.println("Letras e numeros seguidos dispensam o ponto (ex: aa). Com grupos ou apos '*', use '.' (ex: (aa+b)*.abb.a*).");
         System.out.print("Digite a Expressao Regular: ");
         String er = scanner.nextLine().trim();
 
