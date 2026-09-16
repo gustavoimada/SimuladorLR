@@ -1,4 +1,4 @@
-package br.com.simulador.ui;
+package br.com.simulador.at;
 
 import javafx.scene.Cursor;
 import javafx.scene.control.Button;

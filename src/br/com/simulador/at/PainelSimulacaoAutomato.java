@@ -1,4 +1,4 @@
-package br.com.simulador.ui;
+package br.com.simulador.at;
 
 import br.com.simulador.af.PassoAutomato;
 import br.com.simulador.af.ResultadoAutomato;

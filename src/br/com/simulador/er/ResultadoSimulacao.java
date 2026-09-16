@@ -46,7 +46,7 @@ public class ResultadoSimulacao
     public String toString() 
     {
         // ex: "aba → ✓ ACEITA"
-        String visual = palavraOriginal.isEmpty() ? "ε (vazia)" : palavraOriginal;
+        String visual = palavraTestada.isEmpty() ? "E (vazia)" : palavraOriginal;
         return visual + " → " + getStatusFormatado();
     }
 }

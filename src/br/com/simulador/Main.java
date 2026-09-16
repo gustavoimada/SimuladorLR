@@ -1,8 +1,8 @@
 package br.com.simulador;
 
-import br.com.simulador.ui.TelaAutomato;
-import br.com.simulador.ui.TelaER;
-import br.com.simulador.ui.TelaMenuInicial;
+import br.com.simulador.at.TelaAutomato;
+import br.com.simulador.at.TelaER;
+import br.com.simulador.at.TelaMenuInicial;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;

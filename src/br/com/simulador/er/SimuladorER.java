@@ -18,7 +18,7 @@ public class SimuladorER
         if(erOriginal == null)
             limpa = "";
         else
-            limpa = erOriginal.replaceAll("\\s+", ""); // remove os espacos em branco
+            limpa = erOriginal.replaceAll("\\s+", "").replace('ε', 'E'); // normaliza a palavra vazia
 
         // mandamos a versao ja limpa pro validador, que so precisa checar a sintaxe
         ValidadorER.validar(limpa);
@@ -34,7 +34,7 @@ public class SimuladorER
     public ResultadoSimulacao simularPalavra(String palavra) 
     {
         String palavraTratada = palavra == null ? "" : palavra.trim();
-        if(palavraTratada.equals("ε"))
+        if(palavraTratada.equals("E") || palavraTratada.equals("ε"))
             palavraTratada = "";
 
         // aqui usamos direto o metodo matches da String do java, bem simples de entender

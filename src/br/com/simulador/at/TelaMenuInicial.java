@@ -1,4 +1,4 @@
-package br.com.simulador.ui;
+package br.com.simulador.at;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;

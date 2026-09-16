@@ -1,4 +1,4 @@
-package br.com.simulador.ui;
+package br.com.simulador.at;
 
 import br.com.simulador.er.ResultadoSimulacao;
 import br.com.simulador.er.SimuladorER;
@@ -86,20 +86,20 @@ public class TelaER {
         botaoValidar.setMaxWidth(Double.MAX_VALUE);
         botaoValidar.setOnAction(evento -> executarComTratamento(this::validarExpressao));
 
-        campoEntradaUnica.setPromptText("palavra ou ε");
+        campoEntradaUnica.setPromptText("palavra ou E");
         Button botaoReconhecer = Estilo.botaoPrimario("Reconhecer");
         botaoReconhecer.setOnAction(evento -> executarComTratamento(this::reconhecerEntradaUnica));
         HBox linhaUnica = new HBox(8, campoEntradaUnica, botaoReconhecer);
         HBox.setHgrow(campoEntradaUnica, Priority.ALWAYS);
 
-        areaEntradasMultiplas.setPromptText("uma palavra por linha; use ε para palavra vazia");
+        areaEntradasMultiplas.setPromptText("uma palavra por linha; use E para palavra vazia");
         areaEntradasMultiplas.setPrefRowCount(8);
 
         Button botaoMultiplas = Estilo.botaoPrimario("Reconhecer lista");
         botaoMultiplas.setMaxWidth(Double.MAX_VALUE);
         botaoMultiplas.setOnAction(evento -> executarComTratamento(this::reconhecerEntradasMultiplas));
 
-        Label regras = new Label("Use letras, numeros, . para concatenar, | ou + para uniao, * para Kleene e parenteses.");
+        Label regras = new Label("Use E para palavra vazia, letras, numeros, . para concatenar, | ou + para uniao, * para Kleene e parenteses.");
         regras.setWrapText(true);
         regras.setStyle("-fx-text-fill: #475569;");
 

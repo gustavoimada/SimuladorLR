@@ -18,7 +18,8 @@ public class ConversorRegex
             // no regex java, o '.' eh caractere curinga (pega qualquer coisa!),
             // em lfa, '.' eh concatenacao explicita. no regex java, concatenacao eh so botar um do lado do outro (justaposicao)
             // entao a gente remove todos os pontos '.' da expressao
-            String semPontos = comUniaoPadrao.replace(".", "");
+            // E representa a palavra vazia; o grupo permite aplicar '*' a ela.
+            String semPontos = comUniaoPadrao.replace(".", "").replace("E", "(?:)");
 
             // agora checamos se tem algum '|' solto no nivel principal (fora de parenteses)
             // tipo: se o usuario digitou a+b, virou a|b. Se a gente so colocar ^a|b$, o regex vai entender (^a) | (b$)
