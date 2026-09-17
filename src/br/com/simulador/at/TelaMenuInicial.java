@@ -14,9 +14,9 @@ import javafx.scene.layout.VBox;
 public class TelaMenuInicial {
     private final BorderPane raiz = new BorderPane();
 
-    public TelaMenuInicial(Runnable abrirAutomato, Runnable abrirER) {
+    public TelaMenuInicial(Runnable abrirAutomato, Runnable abrirER, Runnable abrirGramatica) {
         raiz.setTop(criarTopo());
-        raiz.setCenter(criarCentro(abrirAutomato, abrirER));
+        raiz.setCenter(criarCentro(abrirAutomato, abrirER, abrirGramatica));
         raiz.setStyle("-fx-background-color: #eef2f6; -fx-font-family: 'Segoe UI', Arial, sans-serif;");
     }
 
@@ -38,7 +38,7 @@ public class TelaMenuInicial {
         return topo;
     }
 
-    private VBox criarCentro(Runnable abrirAutomato, Runnable abrirER) {
+    private VBox criarCentro(Runnable abrirAutomato, Runnable abrirER, Runnable abrirGramatica) {
         Label subtitulo = new Label("Escolha a representacao");
         subtitulo.setStyle("-fx-font-size: 18px; -fx-font-weight: 800; -fx-text-fill: #172033;");
 
@@ -50,10 +50,14 @@ public class TelaMenuInicial {
         botaoER.setPrefWidth(260);
         botaoER.setOnAction(evento -> abrirER.run());
 
-        Label detalhe = new Label("AFD/AFND por diagrama ou ER por expressao textual.");
+        Button botaoGramatica = Estilo.botaoSecundario("Gramaticas Regulares");
+        botaoGramatica.setPrefWidth(260);
+        botaoGramatica.setOnAction(evento -> abrirGramatica.run());
+
+        Label detalhe = new Label("AFD/AFND por diagrama, ER textual ou gramatica linear a direita.");
         detalhe.setStyle("-fx-text-fill: #475569;");
 
-        VBox centro = new VBox(14, subtitulo, botaoAutomato, botaoER, detalhe);
+        VBox centro = new VBox(14, subtitulo, botaoAutomato, botaoER, botaoGramatica, detalhe);
         centro.setAlignment(Pos.CENTER);
         centro.setPadding(new Insets(24));
         return centro;

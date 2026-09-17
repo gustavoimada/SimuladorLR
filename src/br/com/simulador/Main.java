@@ -2,6 +2,7 @@ package br.com.simulador;
 
 import br.com.simulador.at.TelaAutomato;
 import br.com.simulador.at.TelaER;
+import br.com.simulador.at.TelaGramatica;
 import br.com.simulador.at.TelaMenuInicial;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -16,7 +17,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) {
-        cena = new Scene(new TelaMenuInicial(this::abrirAutomato, this::abrirER).getRaiz(), 1220, 760);
+        cena = new Scene(new TelaMenuInicial(this::abrirAutomato, this::abrirER, this::abrirGramatica).getRaiz(), 1220, 760);
         stage.setTitle("Simulador de Linguagens Regulares - LFA");
         stage.setMinWidth(1080);
         stage.setMinHeight(690);
@@ -25,7 +26,7 @@ public class Main extends Application {
     }
 
     private void abrirMenu() {
-        cena.setRoot(new TelaMenuInicial(this::abrirAutomato, this::abrirER).getRaiz());
+        cena.setRoot(new TelaMenuInicial(this::abrirAutomato, this::abrirER, this::abrirGramatica).getRaiz());
     }
 
     private void abrirAutomato() {
@@ -36,6 +37,11 @@ public class Main extends Application {
 
     private void abrirER() {
         TelaER tela = new TelaER(this::abrirMenu);
+        cena.setRoot(tela.getRaiz());
+    }
+
+    private void abrirGramatica() {
+        TelaGramatica tela = new TelaGramatica(this::abrirMenu);
         cena.setRoot(tela.getRaiz());
     }
 }
