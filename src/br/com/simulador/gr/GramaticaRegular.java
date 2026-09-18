@@ -1,30 +1,27 @@
 package br.com.simulador.gr;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 public class GramaticaRegular {
     private final String textoOriginal;
     private final String simboloInicial;
-    private final Set<String> naoTerminais;
-    private final Set<String> terminais;
+    private final List<String> naoTerminais;
+    private final List<String> terminais;
     private final List<ProducaoRegular> producoes;
 
     public GramaticaRegular(
         String textoOriginal,
         String simboloInicial,
-        Set<String> naoTerminais,
-        Set<String> terminais,
+        List<String> naoTerminais,
+        List<String> terminais,
         List<ProducaoRegular> producoes
     ) {
         this.textoOriginal = textoOriginal;
         this.simboloInicial = simboloInicial;
-        this.naoTerminais = new LinkedHashSet<>(naoTerminais);
-        this.terminais = new LinkedHashSet<>(terminais);
-        this.producoes = new ArrayList<>(producoes);
+        this.naoTerminais = naoTerminais;
+        this.terminais = terminais;
+        this.producoes = producoes;
     }
 
     public String getTextoOriginal() {
@@ -35,16 +32,16 @@ public class GramaticaRegular {
         return simboloInicial;
     }
 
-    public Set<String> getNaoTerminais() {
-        return Collections.unmodifiableSet(naoTerminais);
+    public List<String> getNaoTerminais() {
+        return naoTerminais;
     }
 
-    public Set<String> getTerminais() {
-        return Collections.unmodifiableSet(terminais);
+    public List<String> getTerminais() {
+        return terminais;
     }
 
     public List<ProducaoRegular> getProducoes() {
-        return Collections.unmodifiableList(producoes);
+        return producoes;
     }
 
     public List<ProducaoRegular> getProducoesDe(String naoTerminal) {

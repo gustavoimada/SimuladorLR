@@ -1,7 +1,7 @@
 package br.com.simulador.af;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Transicao {
     public static final String EPSILON = "ε";
@@ -44,13 +44,13 @@ public class Transicao {
         this.rotulo = texto;
     }
 
-    public Set<String> getSimbolos() {
-        Set<String> simbolos = new LinkedHashSet<>();
+    public List<String> getSimbolos() {
+        List<String> simbolos = new ArrayList<>();
         String[] partes = rotulo.split(",");
 
         for(String parte : partes) {
             String simbolo = normalizarSimbolo(parte);
-            if(!simbolo.isEmpty()) {
+            if(!simbolo.isEmpty() && !simbolos.contains(simbolo)) {
                 simbolos.add(simbolo);
             }
         }

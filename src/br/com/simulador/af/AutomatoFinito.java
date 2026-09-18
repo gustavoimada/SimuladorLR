@@ -1,26 +1,21 @@
 package br.com.simulador.af;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class AutomatoFinito {
-    private final Map<String, Estado> estados = new LinkedHashMap<>();
+    private final List<Estado> estados = new ArrayList<>();
     private final List<Transicao> transicoes = new ArrayList<>();
 
     public Estado adicionarEstado(String nome, double x, double y) {
         String nomeTratado = validarNomeEstado(nome);
 
-        if(estados.containsKey(nomeTratado)) {
+        if(buscarEstadoPorNome(nomeTratado) != null) {
             throw new IllegalArgumentException("Ja existe um estado chamado " + nomeTratado + ".");
         }
 
         Estado estado = new Estado(nomeTratado, x, y);
-        estados.put(nomeTratado, estado);
+        estados.add(estado);
 
         if(estados.size() == 1) {
             estado.setInicial(true);
@@ -35,23 +30,28 @@ public class AutomatoFinito {
         }
 
         String nomeTratado = validarNomeEstado(novoNome);
+        Estado estadoComMesmoNome = buscarEstadoPorNome(nomeTratado);
 
-        if(!estado.getNome().equals(nomeTratado) && estados.containsKey(nomeTratado)) {
+        if(estadoComMesmoNome != null && estadoComMesmoNome != estado) {
             throw new IllegalArgumentException("Ja existe um estado chamado " + nomeTratado + ".");
         }
 
-        estados.remove(estado.getNome());
         estado.setNome(nomeTratado);
-        estados.put(nomeTratado, estado);
     }
 
     public void removerEstado(Estado estado) {
         if(estado != null) {
-            estados.remove(estado.getNome());
-            transicoes.removeIf(transicao -> transicao.getOrigem() == estado || transicao.getDestino() == estado);
+            estados.remove(estado);
+
+            for(int i = transicoes.size() - 1; i >= 0; i--) {
+                Transicao transicao = transicoes.get(i);
+                if(transicao.getOrigem() == estado || transicao.getDestino() == estado) {
+                    transicoes.remove(i);
+                }
+            }
 
             if(estado.isInicial() && !estados.isEmpty()) {
-                estados.values().iterator().next().setInicial(true);
+                estados.get(0).setInicial(true);
             }
         }
     }
@@ -75,7 +75,7 @@ public class AutomatoFinito {
             throw new IllegalArgumentException("Selecione um estado inicial.");
         }
 
-        for(Estado atual : estados.values()) {
+        for(Estado atual : estados) {
             atual.setInicial(false);
         }
 
@@ -85,8 +85,8 @@ public class AutomatoFinito {
     public Estado getEstadoInicial() {
         Estado inicial = null;
 
-        for(Estado estado : estados.values()) {
-            if(estado.isInicial()) {
+        for(Estado estado : estados) {
+            if(inicial == null && estado.isInicial()) {
                 inicial = estado;
             }
         }
@@ -95,11 +95,11 @@ public class AutomatoFinito {
     }
 
     public List<Estado> getEstados() {
-        return Collections.unmodifiableList(new ArrayList<>(estados.values()));
+        return estados;
     }
 
     public List<Transicao> getTransicoes() {
-        return Collections.unmodifiableList(transicoes);
+        return transicoes;
     }
 
     public List<Transicao> getTransicoesSaindoDe(Estado estado) {
@@ -114,12 +114,12 @@ public class AutomatoFinito {
         return encontradas;
     }
 
-    public Set<String> getAlfabeto() {
-        Set<String> alfabeto = new LinkedHashSet<>();
+    public List<String> getAlfabeto() {
+        List<String> alfabeto = new ArrayList<>();
 
         for(Transicao transicao : transicoes) {
             for(String simbolo : transicao.getSimbolos()) {
-                if(!simbolo.equals(Transicao.EPSILON)) {
+                if(!simbolo.equals(Transicao.EPSILON) && !alfabeto.contains(simbolo)) {
                     alfabeto.add(simbolo);
                 }
             }
@@ -135,19 +135,15 @@ public class AutomatoFinito {
             deterministico = false;
         }
 
-        Map<Estado, Set<String>> usadosPorEstado = new LinkedHashMap<>();
-
         for(Transicao transicao : transicoes) {
             if(transicao.possuiEpsilon()) {
                 deterministico = false;
             }
 
-            Set<String> usados = usadosPorEstado.computeIfAbsent(transicao.getOrigem(), chave -> new LinkedHashSet<>());
             for(String simbolo : transicao.getSimbolos()) {
-                if(!simbolo.equals(Transicao.EPSILON) && usados.contains(simbolo)) {
+                if(!simbolo.equals(Transicao.EPSILON) && possuiOutraTransicaoComMesmoSimbolo(transicao, simbolo)) {
                     deterministico = false;
                 }
-                usados.add(simbolo);
             }
         }
 
@@ -167,5 +163,29 @@ public class AutomatoFinito {
         }
 
         return nomeTratado;
+    }
+
+    private Estado buscarEstadoPorNome(String nome) {
+        Estado encontrado = null;
+
+        for(Estado estado : estados) {
+            if(estado.getNome().equals(nome)) {
+                encontrado = estado;
+            }
+        }
+
+        return encontrado;
+    }
+
+    private boolean possuiOutraTransicaoComMesmoSimbolo(Transicao referencia, String simbolo) {
+        int quantidade = 0;
+
+        for(Transicao transicao : transicoes) {
+            if(transicao.getOrigem() == referencia.getOrigem() && transicao.aceitaSimbolo(simbolo)) {
+                quantidade++;
+            }
+        }
+
+        return quantidade > 1;
     }
 }

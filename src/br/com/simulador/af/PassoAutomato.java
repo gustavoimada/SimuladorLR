@@ -1,23 +1,24 @@
 package br.com.simulador.af;
 
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PassoAutomato {
     private final int indice;
     private final String simboloConsumido;
-    private final Set<String> estadosAtivos;
+    private final List<String> estadosAtivos;
     private final String descricao;
 
-    public PassoAutomato(int indice, String simboloConsumido, Set<Estado> estadosAtivos, String descricao) {
+    public PassoAutomato(int indice, String simboloConsumido, List<Estado> estadosAtivos, String descricao) {
         this.indice = indice;
         this.simboloConsumido = simboloConsumido;
-        this.estadosAtivos = new LinkedHashSet<>();
+        this.estadosAtivos = new ArrayList<>();
         this.descricao = descricao;
 
         for(Estado estado : estadosAtivos) {
-            this.estadosAtivos.add(estado.getNome());
+            if(!this.estadosAtivos.contains(estado.getNome())) {
+                this.estadosAtivos.add(estado.getNome());
+            }
         }
     }
 
@@ -29,8 +30,8 @@ public class PassoAutomato {
         return simboloConsumido;
     }
 
-    public Set<String> getEstadosAtivos() {
-        return Collections.unmodifiableSet(estadosAtivos);
+    public List<String> getEstadosAtivos() {
+        return estadosAtivos;
     }
 
     public String getDescricao() {

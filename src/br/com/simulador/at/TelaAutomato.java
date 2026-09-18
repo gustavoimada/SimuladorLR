@@ -18,15 +18,13 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 public class TelaAutomato {
     private final AutomatoFinito automato = new AutomatoFinito();
     private final Label labelTipoAutomato = new Label();
     private final Label labelStatus = new Label("Pronto");
-    private final Set<String> estadosDestacados = new LinkedHashSet<>();
+    private final List<String> estadosDestacados = new ArrayList<>();
     private final Runnable aoVoltarMenu;
 
     private final DiagramaAutomato diagrama;

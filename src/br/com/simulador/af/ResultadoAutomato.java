@@ -1,6 +1,5 @@
 package br.com.simulador.af;
 
-import java.util.Collections;
 import java.util.List;
 
 public class ResultadoAutomato {
@@ -35,7 +34,7 @@ public class ResultadoAutomato {
     }
 
     public List<PassoAutomato> getPassos() {
-        return Collections.unmodifiableList(passos);
+        return passos;
     }
 
     public String getTipoAutomato() {

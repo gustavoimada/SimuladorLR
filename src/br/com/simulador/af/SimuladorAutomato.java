@@ -1,11 +1,7 @@
 package br.com.simulador.af;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Queue;
-import java.util.Set;
 
 public class SimuladorAutomato {
     private final AutomatoFinito automato;
@@ -24,14 +20,14 @@ public class SimuladorAutomato {
         String palavraTestada = normalizarPalavra(palavra);
         List<PassoAutomato> passos = new ArrayList<>();
 
-        Set<Estado> atuais = new LinkedHashSet<>();
+        List<Estado> atuais = new ArrayList<>();
         atuais.add(inicial);
         atuais = fechamentoEpsilon(atuais);
         passos.add(new PassoAutomato(0, "", atuais, "inicio com fechamento-epsilon"));
 
         for(int i = 0; i < palavraTestada.length(); i++) {
             String simbolo = String.valueOf(palavraTestada.charAt(i));
-            Set<Estado> aposMovimento = mover(atuais, simbolo);
+            List<Estado> aposMovimento = mover(atuais, simbolo);
             atuais = fechamentoEpsilon(aposMovimento);
             passos.add(new PassoAutomato(i + 1, simbolo, atuais, "leu '" + simbolo + "'"));
         }
@@ -56,12 +52,12 @@ public class SimuladorAutomato {
         return resultados;
     }
 
-    private Set<Estado> mover(Set<Estado> origem, String simbolo) {
-        Set<Estado> destinos = new LinkedHashSet<>();
+    private List<Estado> mover(List<Estado> origem, String simbolo) {
+        List<Estado> destinos = new ArrayList<>();
 
         for(Estado estado : origem) {
             for(Transicao transicao : automato.getTransicoesSaindoDe(estado)) {
-                if(transicao.aceitaSimbolo(simbolo)) {
+                if(transicao.aceitaSimbolo(simbolo) && !contemEstado(destinos, transicao.getDestino())) {
                     destinos.add(transicao.getDestino());
                 }
             }
@@ -70,29 +66,48 @@ public class SimuladorAutomato {
         return destinos;
     }
 
-    private Set<Estado> fechamentoEpsilon(Set<Estado> origem) {
-        Set<Estado> fechamento = new LinkedHashSet<>(origem);
-        Queue<Estado> fila = new ArrayDeque<>(origem);
+    private List<Estado> fechamentoEpsilon(List<Estado> origem) {
+        List<Estado> fechamento = new ArrayList<>();
 
-        while(!fila.isEmpty()) {
-            Estado estado = fila.remove();
+        for(Estado estado : origem) {
+            if(!contemEstado(fechamento, estado)) {
+                fechamento.add(estado);
+            }
+        }
+
+        int indice = 0;
+        while(indice < fechamento.size()) {
+            Estado estado = fechamento.get(indice);
 
             for(Transicao transicao : automato.getTransicoesSaindoDe(estado)) {
-                if(transicao.possuiEpsilon() && !fechamento.contains(transicao.getDestino())) {
+                if(transicao.possuiEpsilon() && !contemEstado(fechamento, transicao.getDestino())) {
                     fechamento.add(transicao.getDestino());
-                    fila.add(transicao.getDestino());
                 }
             }
+
+            indice++;
         }
 
         return fechamento;
     }
 
-    private boolean contemEstadoFinal(Set<Estado> estados) {
+    private boolean contemEstadoFinal(List<Estado> estados) {
         boolean encontrou = false;
 
         for(Estado estado : estados) {
             if(estado.isAceitacao()) {
+                encontrou = true;
+            }
+        }
+
+        return encontrou;
+    }
+
+    private boolean contemEstado(List<Estado> estados, Estado procurado) {
+        boolean encontrou = false;
+
+        for(Estado estado : estados) {
+            if(estado == procurado) {
                 encontrou = true;
             }
         }

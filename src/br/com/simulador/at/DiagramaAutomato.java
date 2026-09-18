@@ -20,10 +20,8 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -42,7 +40,7 @@ public class DiagramaAutomato {
 
     private Estado estadoSelecionado;
     private Transicao transicaoSelecionada;
-    private final Set<String> estadosDestacados = new LinkedHashSet<>();
+    private final List<String> estadosDestacados = new ArrayList<>();
 
     public DiagramaAutomato(
         AutomatoFinito automato,
@@ -69,7 +67,7 @@ public class DiagramaAutomato {
         return limitar(y, RAIO_ESTADO + 16, ALTURA - RAIO_ESTADO - 16);
     }
 
-    public void atualizar(Estado estadoSelecionado, Transicao transicaoSelecionada, Set<String> estadosDestacados) {
+    public void atualizar(Estado estadoSelecionado, Transicao transicaoSelecionada, List<String> estadosDestacados) {
         this.estadoSelecionado = estadoSelecionado;
         this.transicaoSelecionada = transicaoSelecionada;
         this.estadosDestacados.clear();
@@ -197,19 +195,17 @@ public class DiagramaAutomato {
 
     private void redesenharTransicoes() {
         camadaTransicoes.getChildren().clear();
-        Map<String, Integer> totais = contarTransicoesPorPar();
-        Map<String, Integer> visitadas = new HashMap<>();
+        List<Transicao> transicoes = automato.getTransicoes();
 
-        for(Transicao transicao : automato.getTransicoes()) {
-            String chave = chavePar(transicao.getOrigem(), transicao.getDestino());
-            int indice = visitadas.getOrDefault(chave, 0);
-            visitadas.put(chave, indice + 1);
-            int total = totais.getOrDefault(chave, 1);
+        for(int i = 0; i < transicoes.size(); i++) {
+            Transicao transicao = transicoes.get(i);
+            int indice = contarTransicoesAnteriores(transicoes, i, transicao.getOrigem(), transicao.getDestino());
+            int total = contarTransicoesDoPar(transicoes, transicao.getOrigem(), transicao.getDestino());
 
             if(transicao.getOrigem() == transicao.getDestino()) {
                 camadaTransicoes.getChildren().add(criarLaco(transicao, indice));
             } else {
-                boolean possuiReversa = totais.containsKey(chavePar(transicao.getDestino(), transicao.getOrigem()));
+                boolean possuiReversa = possuiTransicaoEntre(transicoes, transicao.getDestino(), transicao.getOrigem());
                 camadaTransicoes.getChildren().add(criarAresta(transicao, indice, total, possuiReversa));
             }
         }
@@ -310,19 +306,41 @@ public class DiagramaAutomato {
         });
     }
 
-    private Map<String, Integer> contarTransicoesPorPar() {
-        Map<String, Integer> totais = new HashMap<>();
+    private int contarTransicoesDoPar(List<Transicao> transicoes, Estado origem, Estado destino) {
+        int total = 0;
 
-        for(Transicao transicao : automato.getTransicoes()) {
-            String chave = chavePar(transicao.getOrigem(), transicao.getDestino());
-            totais.put(chave, totais.getOrDefault(chave, 0) + 1);
+        for(Transicao transicao : transicoes) {
+            if(transicao.getOrigem() == origem && transicao.getDestino() == destino) {
+                total++;
+            }
         }
 
-        return totais;
+        return total;
     }
 
-    private String chavePar(Estado origem, Estado destino) {
-        return origem.getNome() + "->" + destino.getNome();
+    private int contarTransicoesAnteriores(List<Transicao> transicoes, int limite, Estado origem, Estado destino) {
+        int total = 0;
+
+        for(int i = 0; i < limite; i++) {
+            Transicao transicao = transicoes.get(i);
+            if(transicao.getOrigem() == origem && transicao.getDestino() == destino) {
+                total++;
+            }
+        }
+
+        return total;
+    }
+
+    private boolean possuiTransicaoEntre(List<Transicao> transicoes, Estado origem, Estado destino) {
+        boolean encontrou = false;
+
+        for(Transicao transicao : transicoes) {
+            if(transicao.getOrigem() == origem && transicao.getDestino() == destino) {
+                encontrou = true;
+            }
+        }
+
+        return encontrou;
     }
 
     private double limitar(double valor, double minimo, double maximo) {

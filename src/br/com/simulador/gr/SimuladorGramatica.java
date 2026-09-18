@@ -1,7 +1,7 @@
 package br.com.simulador.gr;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SimuladorGramatica {
     private final GramaticaRegular gramatica;
@@ -21,13 +21,13 @@ public class SimuladorGramatica {
             testada = "";
         }
 
-        Set<String> estadosAtuais = new LinkedHashSet<>();
+        List<String> estadosAtuais = new ArrayList<>();
         estadosAtuais.add(gramatica.getSimboloInicial());
         boolean aceita = false;
 
         for(int i = 0; i < testada.length(); i++) {
             String simbolo = String.valueOf(testada.charAt(i));
-            Set<String> proximos = new LinkedHashSet<>();
+            List<String> proximos = new ArrayList<>();
             boolean ultimoSimbolo = i == testada.length() - 1;
 
             for(String estado : estadosAtuais) {
@@ -35,7 +35,7 @@ public class SimuladorGramatica {
                     if(!producao.isVazia() && producao.getTerminal().equals(simbolo)) {
                         if(producao.encerraPalavra() && ultimoSimbolo) {
                             aceita = true;
-                        } else if(producao.getDestino() != null) {
+                        } else if(producao.getDestino() != null && !proximos.contains(producao.getDestino())) {
                             proximos.add(producao.getDestino());
                         }
                     }

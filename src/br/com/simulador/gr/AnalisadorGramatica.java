@@ -1,9 +1,7 @@
 package br.com.simulador.gr;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 public class AnalisadorGramatica {
     private AnalisadorGramatica() {
@@ -16,9 +14,9 @@ public class AnalisadorGramatica {
         }
 
         String[] linhas = texto.split("\\R");
-        Set<String> naoTerminais = coletarNaoTerminais(linhas);
+        List<String> naoTerminais = coletarNaoTerminais(linhas);
         List<ProducaoRegular> producoes = new ArrayList<>();
-        Set<String> terminais = new LinkedHashSet<>();
+        List<String> terminais = new ArrayList<>();
         String simboloInicial = null;
 
         for(int i = 0; i < linhas.length; i++) {
@@ -34,7 +32,7 @@ public class AnalisadorGramatica {
                 for(String alternativa : alternativas) {
                     ProducaoRegular producao = analisarAlternativa(origem, alternativa, naoTerminais, i + 1);
                     producoes.add(producao);
-                    if(!producao.isVazia()) {
+                    if(!producao.isVazia() && !terminais.contains(producao.getTerminal())) {
                         terminais.add(producao.getTerminal());
                     }
                 }
@@ -45,8 +43,8 @@ public class AnalisadorGramatica {
         return new GramaticaRegular(textoOriginal, simboloInicial, naoTerminais, terminais, producoes);
     }
 
-    private static Set<String> coletarNaoTerminais(String[] linhas) {
-        Set<String> naoTerminais = new LinkedHashSet<>();
+    private static List<String> coletarNaoTerminais(String[] linhas) {
+        List<String> naoTerminais = new ArrayList<>();
 
         for(int i = 0; i < linhas.length; i++) {
             String linha = linhas[i].trim();
@@ -54,7 +52,9 @@ public class AnalisadorGramatica {
                 String[] partes = separarProducao(linha, i + 1);
                 String origem = partes[0].trim();
                 validarNaoTerminal(origem, i + 1);
-                naoTerminais.add(origem);
+                if(!naoTerminais.contains(origem)) {
+                    naoTerminais.add(origem);
+                }
             }
         }
 
@@ -85,7 +85,7 @@ public class AnalisadorGramatica {
     private static ProducaoRegular analisarAlternativa(
         String origem,
         String alternativaOriginal,
-        Set<String> naoTerminais,
+        List<String> naoTerminais,
         int numeroLinha
     ) {
         String alternativa = alternativaOriginal.replaceAll("\\s+", "");
@@ -132,7 +132,7 @@ public class AnalisadorGramatica {
             && simbolo != 'ε';
     }
 
-    private static void validarReferencias(List<ProducaoRegular> producoes, Set<String> naoTerminais) {
+    private static void validarReferencias(List<ProducaoRegular> producoes, List<String> naoTerminais) {
         for(String naoTerminal : naoTerminais) {
             boolean possuiProducao = false;
             for(ProducaoRegular producao : producoes) {
